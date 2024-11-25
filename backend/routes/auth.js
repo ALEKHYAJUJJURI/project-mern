@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
-const cors = require('cors')
+const dotenv = require('dotenv');
+dotenv.config()
+
 
 
 // Signup
@@ -46,23 +48,19 @@ router.post('/signup', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log(email,password)
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
-
+console.log(user)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.status(200).json({message: 'Login successful',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      }
-    });
+    const token = jwt.sign({ email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: 60 });
+ console.log(token)
+    const refreshToken = jwt.sign({email: user.email, role: user.role }, process.env.REFRESH_TOKEN, {expiresIn:'7d'})
+    
+    res.status(200).json({message: 'Login successful',token, refreshToken,user});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

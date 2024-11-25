@@ -2,6 +2,20 @@
 const express = require('express');
 const Product = require('../models/Product');
 const router = express.Router();
+const verifySeller = (req, res, next) => {
+  const token = req.header('Authorization')?.split(' ')[1]; // Extract the token from the "Authorization" header
+  if (!token) {
+    return res.status(401).json({ message: 'Access Denied. No token provided.' });
+}
+try {
+  // Verify the token and extract payload
+  const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use your secret key
+  req.user = decoded; // Set the decoded payload in req.user
+  next(); // Proceed to the next middleware or route handler
+} catch (err) {
+  return res.status(400).json({ message: 'Invalid Token.' });
+}
+}
 
 // Get all products (for users)
 
@@ -23,7 +37,7 @@ router.get('/', async (req, res) => {
 });
 
 // Add a new product (for sellers)
-router.post('/', async (req, res) => {
+router.post('/', verifySeller, async (req, res) => {
   const { title, description, price, image } = req.body;
   const sellerId = req.user.id; // Set from the verifyToken middleware
   try {

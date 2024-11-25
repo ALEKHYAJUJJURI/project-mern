@@ -1,41 +1,51 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, notification } from 'antd';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
-    console.log(values)
+  
     setLoading(true);
     const { email, password } = values;
 
     try {
-      // Send login request
-      const response = await axios.post('http://localhost:8080/api/auth/login', { email, password });
-      console.log(response)
-      if (response.status === 200) {
-        console.log(true)
+      
+      const response = await axios.post('http://localhost:8080/api/auth/login', { email, password })
+      
+        console.log(response)
+      if (response.status === 200){
+        console.log(response.data.user.role)
+        
         notification.success({
           message: 'Login Successful',
           description: 'You have logged in successfully!',
-        });
+        })
+        console.log(response)
         // Save the token in localStorage (or context)
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('refreshToken',response.data.refreshToken)
+        console.log(response.data.token)
+        localStorage.setItem('role',response.data.user.role)
+
         localStorage.setItem('user', JSON.stringify(response.data.user));
         // Redirect based on role
-      //  if (response.data.user.role === 'admin') {
-        //  navigate('/admin-dashboard');
-        //} else 
+       if (response.data.user.role === 'admin') {
+        navigate('/admin-dashboard');
+        } else 
         if (response.data.user.role === 'seller') {
           navigate('/seller-dashboard');
         } else {
           navigate('/user-dashboard');
         }
       }
-    } catch (error) {
+    
+      
+      }
+     catch (error) {
       notification.error({
         message: 'Login Failed',
         description: error.response?.data?.message || 'Something went wrong. Please try again.',
@@ -70,6 +80,7 @@ const Login = () => {
             Login
           </Button>
         </Form.Item>
+        New User? <Link to='/signup'>Sign up</Link>
       </Form>
     </div>
   );

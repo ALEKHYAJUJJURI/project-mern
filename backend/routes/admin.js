@@ -14,7 +14,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// Get all sellers
+// Get all
 router.get('/sellers', async (req, res) => {
   try {
     const sellers = await User.find({ role: 'seller' });
