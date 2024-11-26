@@ -230,7 +230,7 @@ function addToCart(){
                       cover={
                         <img
                           alt={product.title}
-                          src={product.image}
+                          src={product.image} width={200} height={250}
                           style={{ height: '200px', objectFit: 'cover' }}
                         />
                       }

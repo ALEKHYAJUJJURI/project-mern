@@ -49,7 +49,7 @@ const [userName,setUserName] = useState({})
     <div style={{ padding: '20px' }}>
      <div className='d-flex justify-content-between'>
      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>{userName.name} Welcome</h1>
-     <Button color="danger" onClick={handleLogout}>Logout</Button>
+     <Button onClick={handleLogout}>Logout</Button>
      </div>
       <Row gutter={[16, 16]}>
         {products.map((product) => (

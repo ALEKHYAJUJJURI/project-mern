@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { Form, Input, Button, notification } from 'antd';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
+const useContext = createContext()
+
 const Login = () => {
+  
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 

@@ -26,6 +26,7 @@ function SellerDashboard() {
       const url = 'http://localhost:8080/api/seller/products'; // Always use the POST endpoint for adding new products
 
       const response = await axios.post(url, values, {
+        "Content-Type": "application/json",
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
@@ -49,11 +50,16 @@ function SellerDashboard() {
 
   // Delete a product
   const deleteProduct = async (id) => {
+    console.log(id)
     try {
       await axios.delete(`http://localhost:8080/api/seller/products/${id}`, {
+        "Content-Type": "application/json",
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
+      navigate(`/delete/${id}`)
+     
       setProducts((prev) => prev.filter((product) => product._id !== id));
+      console.log( setProducts((prev) => prev.filter((product) => product._id !== id)))
       notification.success({
         message: 'Product Deleted',
         description: 'The product has been deleted successfully.',

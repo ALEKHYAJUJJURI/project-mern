@@ -61,8 +61,10 @@ router.put('/products/:id', verifySeller, async (req, res) => {
 // Delete a product
 router.delete('/products/:id', verifySeller, async (req, res) => {
   const { id } = req.params;
+  console.log(req.params)
   try {
     const product = await Product.findOne({ _id: id, sellerId: req.user.id });
+    console.log(product)
     if (!product) return res.status(404).json({ message: 'Product not found or unauthorized' });
 
     await product.remove();
